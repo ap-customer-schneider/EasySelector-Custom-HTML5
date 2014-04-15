@@ -1,0 +1,853 @@
+dependantCount = 0
+$differenceVal = 0
+$maxCapacity = AP.solutions.capacity
+$accessoriesOriginal = [];
+$('.child-selector-container').show();
+$('.child-selector-container').empty().html("<%= escape_javascript(render(:partial => 'configurations/stacked-left-right')) %>");
+
+
+container_name1 = '.child-selector-container';
+
+
+
+
+AP1 = <%=raw  @ap.to_json %>;
+//console.log(AP1);
+
+if (!Array.prototype.filter) {
+    Array.prototype.filter = function(fn, context) {
+        var i, length, result, value;
+        i = void 0;
+        value = void 0;
+        result = [];
+        length = void 0;
+        length = this.length;
+        i = 0;
+        while (i < length) {
+            if (this.hasOwnProperty(i)) {
+                value = this[i];
+                if (fn.call(context, value, i, this)) {
+                    result.push(value);
+                }
+            }
+            i++;
+        }
+        return result;
+    };
+}
+
+if (!Array.prototype.forEach) {
+    Array.prototype.forEach = forEach = function(callback, thisArg) {
+        "use strict";
+        var O, T, k, kValue, len, _results;
+        T = void 0;
+        k = void 0;
+        kValue = void 0;
+        O = Object(this);
+        len = O.length >>> 0;
+        if (arguments.length >= 2) {
+            T = thisArg;
+        }
+        k = 0;
+        _results = [];
+        while (k < len) {
+            if (k in O) {
+                kValue = O[k];
+                callback.call(T, kValue, k, O);
+            }
+            _results.push(k++);
+        }
+        return _results;
+    };
+}
+
+if (!Array.prototype.map) {
+    Array.prototype.map = function(callback, thisArg) {
+        var A, O, T, k, kValue, len, mappedValue;
+        T = void 0;
+        A = void 0;
+        k = void 0;
+        O = Object(this);
+        len = O.length >>> 0;
+        if (thisArg) {
+            T = thisArg;
+        }
+        A = new Array(len);
+        k = 0;
+        while (k < len) {
+            kValue = void 0;
+            mappedValue = void 0;
+            if (k in O) {
+                kValue = O[k];
+                mappedValue = callback.call(T, kValue, k, O);
+                A[k] = mappedValue;
+            }
+            k++;
+        }
+        return A;
+    };
+}
+
+if ("function" !== typeof Array.prototype.reduce) {
+    Array.prototype.reduce = function(callback, opt_initialValue) {
+        "use strict";
+        var index, isValueSet, length, value;
+        index = void 0;
+        value = void 0;
+        length = this.length >>> 0;
+        isValueSet = false;
+        if (1 < arguments.length) {
+            value = opt_initialValue;
+            isValueSet = true;
+        }
+        index = 0;
+        while (length > index) {
+            if (this.hasOwnProperty(index)) {
+                if (isValueSet) {
+                    value = callback(value, this[index], index, this);
+                } else {
+                    value = this[index];
+                    isValueSet = true;
+                }
+            }
+            ++index;
+        }
+        return value;
+    };
+}
+
+if (!Object.keys) {
+    Object.keys = (function() {
+        "use strict";
+        var dontEnums, dontEnumsLength, hasDontEnumBug, hasOwnProperty;
+        hasOwnProperty = Object.prototype.hasOwnProperty;
+        hasDontEnumBug = !{
+            toString: null
+        }.propertyIsEnumerable("toString");
+        dontEnums = ["toString", "toLocaleString", "valueOf", "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "constructor"];
+        dontEnumsLength = dontEnums.length;
+        return function(obj) {
+            var i, prop, result;
+            result = [];
+            prop = void 0;
+            i = void 0;
+            for (prop in obj) {
+                if (hasOwnProperty.call(obj, prop)) {
+                    result.push(prop);
+                }
+            }
+            if (hasDontEnumBug) {
+                i = 0;
+                while (i < dontEnumsLength) {
+                    if (hasOwnProperty.call(obj, dontEnums[i])) {
+                        result.push(dontEnums[i]);
+                    }
+                    i++;
+                }
+            }
+            return result;
+        };
+    })();
+}
+
+
+    var apViewport, _viewport;
+    AP1.finalParts = [];
+    AP1.optionDependants = [];
+    _viewport = $('head > meta[name=viewport]:last');
+    apViewport = $('<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>');
+    if (_viewport.length > 0) {
+        _viewport.replaceWith(apViewport);
+    } else {
+        $('head').append(apViewport);
+    }
+    $(container_name1 + " input[value=\"n_a\"] + label").hide();
+    $(container_name1 + " input[value=\"n_a\"]").hide();
+    if ($(container_name1 + " input:radio").val() !== "n_a") {
+        $(container_name1 + " .ap-fieldset-fields input:radio:last").parent("label").show();
+    } else {
+        $(container_name1 + " .ap-fieldset-fields input:radio:last").parent("label").hide();
+    }
+    $productIdentifier = $("#ap-headline").data('id');
+    // document.getElementById('ap-help-button1').setAttribute('href', $baseHelpURL.concat('&prod=').concat($productIdentifier));
+    //$helpURL = $baseHelpURL.concat('&prod=').concat($productIdentifier);
+    $(container_name1 + ' #ap1-psubset-select').on({
+        change: function() {
+
+            //console.log('subset changed');
+            dependantCount = 0;
+            $('#overlaycontainerNest').hide();
+            $('#overlayOpacityNest').hide();
+            $('#overlayOpacityNest').css('filter', 'alpha(opacity=20)');
+            $('#overlayOpacityNest').fadeIn('fast');
+            $('#overlaycontainerNest').fadeIn('fast');
+            $('.test-button-partial').show();
+            $('#popup_box-nest').hide();
+            return findSolution();
+        }
+    });
+    $('#ap-close-button').on({
+        click: function() {
+            $('#overlaycontainer').hide();
+            $('#overlayOpacity').hide();
+            $('#overlayOpacity').css('filter', 'alpha(opacity=20)');
+            $('#overlayOpacity').fadeIn('fast');
+            return $('#overlaycontainer').fadeIn('fast');
+        }
+    });
+    $('#ap-close-button-nest').on({
+        click: function() {
+            $('#overlaycontainerNest2').hide();
+            $('#overlayOpacityNest2').hide();
+            $('#overlayOpacityNest2').css('filter', 'alpha(opacity=20)');
+            $('#overlayOpacityNest2').fadeIn('fast');
+            $('#overlaycontainerNest2').fadeIn('fast');
+            return $('#popup_box-nest').show();
+        }
+    });
+    $('.deleteconfirmbuttonyes').on({
+        click: function() {
+            return $(container_name1).modal('hide');
+        }
+    });
+    $('.deleteconfirmbuttonno').on({
+        click: function() {
+            $('#overlaycontainer').fadeOut('fast');
+            return $('#overlayOpacity').fadeOut('fast');
+        }
+    });
+    $(container_name1 + ' input:radio + label').on({
+        click: function(e) {
+            var id;
+
+            id = $(e.currentTarget).attr('for');
+            return $(container_name1 + " #" + id).click().change();
+        }
+    });
+    $(container_name1 + ' #ap-reset-button-nest').on({
+        click: function(e) {
+            resetForm();
+            findSolution();
+        }
+    });
+
+    $(container_name1 + ' .option-edit').on({
+        click: function(e) {
+            var id, option;
+            //console.log('enabling options');
+            //console.log($(e.currentTarget).attr('for'));
+            //console.log($("[data-option='" + id + "']"));
+            id = $(e.currentTarget).attr('for');
+            //console.log("this is the id " + id);
+            option = $("[data-option='" + id + "']");
+            //console.log(option);
+            $(this).closest('.ap-fieldset').removeClass('edited');
+            modifyDependantCount(-1);
+            return enableSingleOption(option);
+        }
+    });
+    $(container_name1 + ' .ap-add-quantity').on({
+        click: function(e) {
+            return $(e.currentTarget).hide().siblings('.ap-quantity').show().focus();
+        }
+    });
+    $(container_name1 + ' a.ap-sb-link').on({
+        click: function(e) {
+            return e.stopPropagation();
+        }
+    });
+    $(container_name1 + ' .ap-subset-item').on({
+        click: function(e) {
+            var subset;
+
+            subset = $(container_name1 + ' #ap1-psubset-select');
+
+            $("option[name=\"" + subset.prop('name') + "\" ][value=\"" + $(this).data('value') + "\"]").prop("selected", true);
+            $(container_name1 + ' #ap-psubset-container').show();
+            return $(container_name1 + ' #ap1-psubset-select').change();
+        }
+    });
+    $(container_name1 + ' .ap-quantity').on({
+        focus: function(e) {
+            var data, target;
+            target = $(e.currentTarget);
+            data = target.data();
+            //console.log(target.val());
+            target.val(target.val() - $differenceVal);
+            $differenceVal = 0;
+            //console.log(target.val());
+            if (data.min === data.max && data.min !== -1 && target.closest(".ap-rtype-item").hasClass("ap-part-item")) {
+                target.blur();
+            }
+            target.addClass('focused');
+            if (target.hasClass('focusOn')) {
+                return target.removeClass('focusOn');
+            }
+        },
+        blur: function(e) {
+            if ($(this).find('.ap-quantity').data('unitcapacity') != 'N/A') {
+
+                var capacity, data, target, val;
+                target = $(e.currentTarget);
+                data = target.data();
+                val = Math.abs(parseInt(target.val()) || 'N/A');
+               // console.log('blurs target, data, and val');
+               // console.log(target);
+               // console.log(data);
+               // console.log(val);
+                if (target.closest('.ap-rtype-item').data().type === 'accessory' && val === 0) {
+                    target.val(Math.abs(data.min)).hide().siblings('.ap-add-quantity').show();
+                    jQuery(e.currentTarget).next().fadeOut('fast');
+                    target.removeClass('focused');
+                } else {
+                    val = Math.max(val, data.min);
+                    if (data.max > -1) {
+                        val = Math.min(val, data.max);
+                    }
+                    target.val(Math.abs(val));
+                    jQuery(e.currentTarget).next().fadeIn('fast');
+                }
+                //unit capacity function deleted. doesn't work/ doesn't work in desired way
+
+                capacity = 0;
+                return $(container_name1 + ' #ap-accessories li').each(function(i, li) {
+                    var capacitySingle;
+                    capacitySingle = Math.abs(parseInt($(this).find('.ap-quantity').val()));
+                    if ($(this).find('.ap-quantity').data('unitcapacity') > 1 && $(this).find('.ap-quantity').data('unitcapacity') === 'number' && ($(this).find('.ap-quantity').data('unitcapacity') % 1) === 0) {
+                        var unitCap = Math.abs(parseInt($(this).find('.ap-quantity').data('unitcapacity')));
+                        capacitySingle = capacitySingle * unitCap;
+                    }
+                    if (typeof capacitySingle === 'number' && (capacitySingle % 1) === 0 && capacitySingle > 0 && $(this).find('.focused').length) {
+                        capacity = capacitySingle + capacity;
+                        if ($maxCapacity < capacity && !$(container_name1 + ' #ap-accessories ul').find('.focusOn').length) {
+                            $differenceVal = capacity - $maxCapacity;
+                            $(this).find('.ap-quantity').addClass('focusOn');
+                            $('#overlaycontainerCapacity').hide();
+                            $('#overlayOpacityCapacity').hide();
+                            $('#overlayOpacityCapacity').css('filter', 'alpha(opacity=20)');
+                            $('#overlayOpacityCapacity').fadeIn('fast');
+                            $('#overlaycontainerCapacity').fadeIn('fast');
+                            return false;
+                        }
+                    }
+                });
+            }
+        }
+    });
+    $('.deleteconfirmbuttoncapacity').on({
+        click: function() {
+            $('.focusOn').focus();
+            $('#overlaycontainerCapacity').fadeOut('fast');
+            return $('#overlayOpacityCapacity').fadeOut('fast');
+        }
+    });
+    $(container_name1 + ' .ap-quant-remove').on({
+        mouseenter: function(e) {
+            $(e.currentTarget).prev().css('border', '2px red solid');
+            return $(e.currentTarget).next().show();
+        },
+        mouseleave: function(e) {
+            return $(e.currentTarget).prev().css('border', 'none');
+        },
+        click: function(e) {
+            $(e.currentTarget).prev().hide();
+            $(e.currentTarget).prev().prev().show();
+            jQuery(e.currentTarget).fadeOut('fast');
+            return $(e.currentTarget).siblings('.ap-quantity').val(1);
+        }
+    });
+    $(container_name1 + " #ap-accept-button").click(function() {
+        return submitFinalResult('accept');
+    });
+    $(container_name1 + " #ap-accept-reset-button").click(function() {
+        return submitFinalResult('accept-reset');
+    });
+    $(container_name1).find("input:radio,select").on({
+        change: function() {
+            $(this).trigger('blur');
+            var parentTarget;
+            //console.log("option value changed");
+            parentTarget = $(this).closest('.ap-fieldset');
+            if ($(this).val() !== 'ap-unselected') {
+                $(this).closest('.ap-fieldset').addClass('edited');
+                if ($(this).attr('id') !== 'ap1-psubset-select') {
+                    togglePreferredImage($(this));
+                    if ($is_ie_lt9 = true) {
+                        if ($(this).is('select')) {
+                            modifyDependantCount(1);
+                        } else {
+                            modifyDependantCount(.5);
+                        }
+                    } else {
+                        modifyDependantCount(1);
+                    }
+                }
+            } else {
+                $(this).closest('.ap-fieldset').removeClass('edited').removeClass('preferred');
+                if ($(this).attr('id') !== 'ap1-psubset-select') {
+                    modifyDependantCount(-1);
+                }
+            }
+            return findSolution(parentTarget);
+        }
+    });
+
+
+hideOption = function(option) {
+    if ($(option).length > 0) {
+        return $(option).each(function() {
+            var parentName;
+            if ($(this).is('option') && $(this).val() !== 'ap-unselected' && (!$(this).closest('select').hasClass('hidden-select')) && (!$(this).closest('select').is('#ap1-psubset-select'))) {
+                parentName = $(this).closest('select').prop('name') + '-hidden';
+                $(this).prop('disabled', true).prop('selected', false);
+                $(this).detach();
+                return $(container_name1 + ' select[name=\"' + parentName + '\"]').first().append($(this));
+            }
+        });
+    }
+};
+
+showOption = function(option) {
+    //console.log(option)
+    if ($(option).length > 0) {
+        $(option).each(function() {
+            var oldVal, parent, parentName;
+            if ($(this).is('option') && $(this).val() !== 'ap-unselected' && $(this).closest('select').hasClass('hidden-select') && (!$(this).closest('select').is('#ap1-psubset-select'))) {
+                parentName = $(this).closest('select').prop('name').replace('-hidden', '');
+                //console.log("this is a parent name " + parentName);
+                $(this).prop('disabled', false);
+                $(this).detach();
+                parent = $(container_name1 + ' select[name=\"' + parentName + '\"]').first();
+                //console.log("this is the parent")
+                //console.log(parent)
+                oldVal = parent.val();
+                //console.log("this is the old value of parent");
+                //console.log(oldVal);
+                //console.log($(this));
+                parent.append($(this));
+                parent.val(oldVal);
+            }
+        });
+    }
+};
+
+resetForm = function() {
+    AP1.finalParts = [];
+    AP1.finalSolution = {};
+    //console.log("this is the reset form " + container_name1);
+    $(container_name1 + ' .ap-fieldset').removeClass('edited').removeClass('preferred');
+    enableAllOptions();
+    dependantCount = 0;
+    return modifyDependantCount(0);
+};
+
+clearUI = function() {
+    $(container_name1 + " .ap-section-list ul li:not(.template)").remove();
+    $(container_name1 + " .ap-section-list .message").show();
+    $(container_name1 + " .ap-section-list .no-results").hide();
+    $(container_name1 + ' #ap-accept-reset-button').prop('disabled', true);
+    $(container_name1 + " .capacity-message").addClass('hidden').hide();
+    return $(container_name1 + ' #ap-accept-button').prop('disabled', true);
+};
+
+togglePreferredImage = function(elem) {
+    if ($(elem).is('select') || $(elem).is('option')) {
+        if ($(elem).first().data('is_preferred') || $(elem).find(':selected').first().data('is_preferred')) {
+            return $(elem).closest('.ap-fieldset').addClass('preferred');
+        } else {
+            return $(elem).closest('.ap-fieldset').removeClass('preferred');
+        }
+    }
+};
+
+disableAllOptions = function() {
+    $(container_name1).find('input:radio').prop("disabled", true).prop("checked", false);
+    return hideOption($(container_name1).find('option'));
+};
+
+enableAllOptions = function() {
+    AP1.optionDependants = [];
+    $(container_name1).find('input:radio').prop("disabled", false).prop("checked", false);
+    showOption($(container_name1).find('option'));
+    $(container_name1 + " select:not(#ap1-psubset-select)").each(function(i, e) {
+
+        return $(e).val("ap-unselected");
+    });
+
+    $('#overlaycontainerNest').hide();
+    $('#overlayOpacityNest').hide();
+    $('#overlayOpacityNest').css('filter', 'alpha(opacity=20)');
+    $('#overlayOpacityNest').fadeIn('fast');
+    $('#overlaycontainerNest').fadeIn('fast');
+    $('.test-button-partial').show();
+    $('#popup_box-nest').hide();
+};
+
+enableSingleOption = function(option) {
+    var dependants, parentTarget;
+    parentTarget = option.closest(container_name1 + ' .ap-fieldset');
+    dependants = findDependants(parentTarget.data('name')) || [];
+    if (dependants.length > 0) {
+        dependants.forEach(function(e) {
+            var elem;
+            elem = $(container_name1 + (" input:radio[name='" + e.name + "'], ") + container_name1 + (" select[name='" + e.name + "']"));
+            elem.prop("disabled", false).prop("checked", false);
+            if (elem.is("select")) {
+                showOption($(container_name1 + ' select[name=\"' + elem.prop('name') + '-hidden\"]').find('option'));
+                elem.val("ap-unselected");
+                return togglePreferredImage(elem);
+            }
+        });
+        AP1.optionDependants = filterDependants(parentTarget.data('name'));
+    }
+    return findSolution();
+};
+
+findAvailableOptionsForSolutions = function(solutions) {
+    var i, options, sanitizedKeys, sol;
+    options = [];
+    i = 0;
+    while (i < solutions.length) {
+        sol = solutions[i];
+        sanitizedKeys = sanitizeKeys(sol);
+        delete sanitizedKeys[$(container_name1 + ' #ap1-psubset-select').prop('name')];
+        sanitizedKeys.forEach(function(e) {
+            if ($(container_name1 + " input:radio[name=\"" + e + "\"][value=\"" + sol[e] + "\"]").length) {
+                options.push($("input:radio[name=\"" + e + "\"][value=\"" + sol[e] + "\"]"));
+            }
+            if ($(container_name1 + " option[name=\"" + e + "\"][value=\"" + sol[e] + "\"]").length) {
+                return options.push($("option[name=\"" + e + "\"][value=\"" + sol[e] + "\"]"));
+            }
+        });
+        i++;
+    }
+    return options;
+};
+
+limitAvailableOptions = function(solutions, selected_fieldset) {
+    var i, sanitizedKeys, sol;
+    disableAllOptions();
+    i = 0;
+    while (i < solutions.length) {
+        sol = solutions[i];
+        sanitizedKeys = sanitizeKeys(sol);
+        delete sanitizedKeys[$(container_name1 + ' #ap1-psubset-select').prop('name')];
+        sanitizedKeys.forEach(function(e) {
+            $(container_name1 + " input:radio[name=\"" + e + "\"][value=\"" + sol[e] + "\"]").prop("disabled", false);
+            return showOption($(container_name1 + " option[name=\"" + e + "\"][value=\"" + sol[e] + "\"]"));
+        });
+        i++;
+    }
+    return selectLastOption(selected_fieldset);
+};
+
+isValidOption = function(option) {
+    if (option.is("radio") && !option.prop('disabled')) {
+        return true;
+    } else if (option.is("option") && (!option.prop('disabled')) && (!option.parent().hasClass('hidden-select'))) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+matchDependants = function(dependantName) {
+    return $.grep(AP1.optionDependants, function(item) {
+        return item.name === dependantName;
+    });
+};
+
+findDependants = function(dependantParentName) {
+    return $.grep(AP1.optionDependants, function(item) {
+        return item.dependsOn === dependantParentName;
+    });
+};
+
+filterDependants = function(dependantParentName) {
+    return $.grep(AP1.optionDependants, function(item) {
+        return item.dependsOn !== dependantParentName;
+    });
+};
+
+selectLastOption = function(selected_fieldset) {
+
+    return $(".child-selector-container .ap-fieldset").each(function(i, e) {
+
+        var availableSelection, currentlySelected, elementName, lastOption, obj, onlyOneSelection, parentFieldset;
+        parentFieldset = $(e);
+        elementName = parentFieldset.data("name");
+        availableSelection = [];
+        $(".child-selector-container [name='" + elementName + "']").each(function() {
+        //$(container_name1 + " [name=\"" + elementName + "\"]").each(function() {
+            var ref;
+            ref = $(this);
+
+
+            if (ref.is(":radio") && !(ref.is(":disabled"))) {
+                console.log(availableSelection);
+                return availableSelection.push(ref.val());
+
+            } else {
+                if (ref.is("option") && (!ref.is(":disabled")) && (ref.val() !== "ap-unselected")) {
+                    //console.log('printing ref for the select last option')
+                    //console.log(ref)
+                    return availableSelection.push(ref.val());
+                }
+            }
+        });
+        if (availableSelection.length === 1) {
+            if (selected_fieldset) {
+                obj = {
+                    name: elementName,
+                    value: availableSelection[0],
+                    dependsOn: selected_fieldset.data('name')
+                };
+                if (matchDependants(elementName).length === 0) {
+                    AP1.optionDependants.push(obj);
+                }
+            }
+            lastOption = $(container_name1 + " [name=\"" + elementName + "\"][value=\"" + availableSelection[0] + "\"]");
+            //console.log(lastOption);
+            lastOption.prop("checked", true).prop("selected", true);
+            togglePreferredImage(lastOption);
+        }
+        currentlySelected = $(container_name1 + ' :enabled:checked:not([value="ap-unselected"])', parentFieldset).length > 0;
+        if (currentlySelected) {
+            parentFieldset.addClass("has-selection");
+        } else {
+            parentFieldset.removeClass("has-selection");
+        }
+        onlyOneSelection = $(container_name1 + " input:radio:not(:disabled):not([style]) + label", parentFieldset).length === 1;
+        if (onlyOneSelection) {
+            parentFieldset.addClass("one-option");
+        } else {
+            parentFieldset.removeClass("one-option");
+        }
+        if ($(".child-selector-container").find("select,input:radio:not(:disabled):not([value=\"n_a\"])", parentFieldset).length > 0) {
+            parentFieldset.show();
+        } else {
+            parentFieldset.hide();
+        }
+
+        $(".child-selector-container").find("input:radio:checked", parentFieldset).next("label").find("> span").addClass("labelChecked");
+        //$(container_name1 + " input:radio:checked", parentFieldset).next("label").find("> span").addClass("labelChecked");
+        return $(container_name1 + " input:radio:not(:checked)", parentFieldset).next("label").find("> span").removeClass("labelChecked");
+
+    });
+};
+
+findSolution = function(selected_fieldset) {
+    var available_solutions, matchOn;
+    clearUI();
+    available_solutions = [];
+    if (AP1.solutions.length > 0) {
+        matchOn = {};
+        sanitizeKeys(AP1.solutions[0]).forEach(function(e) {
+            return matchOn[e] = $(".child-selector-container select[name=\"" + e + "\"], .child-selector-container input:radio[name=\"" + e + "\"]:checked").val();
+        });
+        //console.log("about to print matchon");
+        //console.log(matchOn);
+        available_solutions = AP1.solutions.filter(function(e) {
+            return Object.keys(matchOn).reduce((function(memo, key) {
+                return memo && solutionEqualityTest(e[key], matchOn[key]);
+            }), true);
+        });
+
+        limitAvailableOptions(available_solutions, selected_fieldset);
+        if (available_solutions.length === 1) {
+            AP1.finalSolution = available_solutions[0];
+            //console.log(AP1.finalSolution);
+            $(container_name1 + " .ap-section-list .message").hide();
+            $(container_name1 + " .ap-section-list .no-results").hide();
+            $(container_name1 + ' #ap-accept-button').prop('disabled', false);
+            $(container_name1 + ' #ap-accept-reset-button').prop('disabled', false);
+            updatePartLists(available_solutions[0]);
+        } else {
+            clearUI();
+        }
+        getUnselectedList();
+        //return document.getElementById('ap-help-button').setAttribute('href', $prodSubsetURL.concat($areq));
+    }
+};
+
+updatePartLists = function(solution) {
+    if (solution) {
+        Shadowbox.clearCache();
+        AP1.parts.forEach(function(e) {
+            if (e.solution_id === solution.solution_id) {
+                return insertIntoList($(container_name1 + " #ap-solution"), e, 0);
+            }
+        });
+        $('#config-container').find('#ap-accessories li').each(function(index) {
+            var blahblah = $(this).find('.ap-label').text();
+            //console.log(blahblah);
+            $accessoriesOriginal.push(blahblah);
+            //console.log($accessoriesOriginal[index]);
+        });
+
+        AP1.accessories.forEach(function(e) {
+            if (e.solution_id === solution.solution_id) {
+                //console.log('whatda');
+                //console.log(e.part);
+                var $j = 0;
+                //console.log('INARRAY');
+                //console.log($.inArray(e.part, $accessoriesOriginal));
+                if ( $.inArray(e.part, $accessoriesOriginal) > -1 ) {
+                    //console.log('found you little shit in the dom');
+                    return insertIntoList($(container_name1 + " #ap-accessories"), e, 0);
+                } else {
+                    //console.log('didnt find you DAMMIT');
+                    return insertIntoList($(container_name1 + " #ap-accessories"), e, 0);
+                }
+            }
+        });
+        if (AP1.parts.length > 0 || AP1.accesories.length > 0) {
+            Shadowbox.setup('a.ap-sb-link', {
+                player: 'img'
+            });
+        }
+        
+    }
+};
+
+insertIntoList = function(list, rtype, disabled) {
+    var listItem, max, max_label, min, min_label, quantity, src, template, thumb, unit_capacity;
+
+    template = $('ul li.template', list);
+    listItem = template.clone(true);
+    unit_capacity = Math.abs(parseInt(rtype.unit_capacity)) || 1;
+
+    if (rtype.min_quantity === null) {
+        min = -1;
+    } else {
+        min = Math.min(Math.abs(parseInt(rtype.min_quantity) || 1), 1);
+    }
+    if (rtype.max_quantity === null) {
+        max = -1;
+    } else {
+        max = Math.max(Math.abs(parseInt(rtype.max_quantity) || 1), 1);
+    }
+
+    quantity = $('.ap-quantity', listItem);
+    quantity.data('min', min);
+    quantity.data('max', max);
+    quantity.data('unitcapacity', unit_capacity);
+    quantity.val(Math.abs(min));
+    min_label = min > -1 ? min : "None";
+    max_label = max > -1 ? max : "None";
+    quantity.prop('title', "min: " + min_label + " max: " + max_label + " unit capacity: " + unit_capacity);
+    $('.ap-label', listItem).text(rtype.part);
+    $('.ap-description', listItem).text(rtype.description || 'There is no description for this item.');
+    if (disabled == 1) {
+        listItem.removeClass('template').addClass('disabled-text').addClass('disabled-accessory').data('part', rtype.part).data('type', + rtype.type);
+
+    } else{
+        listItem.removeClass('template').data('part', rtype.part).data('type', rtype.type);
+    }
+
+    $('ul', list).append(listItem);
+    return $('.disabled-text').show();
+};
+
+submitFinalResult = function(addButton) {
+    //console.log('SUBMITTING FINAL NESTED RESULT');
+    $(container_name1).find('#ap-accessories li').each(function( index ) {
+        if (index != 0) {
+            var boxVal = ($(this).find('.ap-quantity').val());
+            var maxQuant = Math.abs(parseInt($(this).find('.ap-quantity').data('max')));
+            var liElement = ($( this ).html() );
+            var mainSelectorElement = $(this).find('.ap-label').text();
+            $('#config-container').find('#ap-accessories li').each(function() {
+                if ($(this).find('.ap-label').text() == mainSelectorElement){
+                    //This might be able to fix the intermittent issue of having both add and number input boxes on the same line &&
+                    // boxVal > 0
+                    //console.log('wimbawapawimbawapa');
+                    var parentContainerValue = Math.abs(parseInt($(this).find('.ap-quantity').val()));
+                    var innerBoxValue = Math.abs(parseInt(boxVal));
+                    var subtractOne = parentContainerValue + innerBoxValue;
+                    if (subtractOne > maxQuant) {
+                        subtractOne = maxQuant;
+                    }
+                    $(this).find('.ap-quantity').val(Math.abs(parseInt(subtractOne)));
+                    //console.log(parentContainerValue);
+                    //console.log(innerBoxValue);
+                    //console.log(subtractOne);
+                    return false;
+                } else {
+                    //console.log('TUTUTUTUTUTUTU');
+                    liElement = ('<li class="ap-rtype-item" id="' + mainSelectorElement + '" boxValue="' + boxVal + '">').concat(liElement);
+                    liElement = liElement.concat('<div class="fa fa-flag flag-container"><\/div>');
+                    liElement = liElement.concat('</li>');
+                    $('#config-container #ap-accessories ul').prepend(liElement);
+                    var boxedVal = $('#config-container #' + mainSelectorElement).attr('boxValue');
+                    $('#config-container #' + mainSelectorElement + ' .ap-quantity').val(Math.abs(parseInt(boxedVal)));
+                    return false;
+                }
+            });
+
+        };
+    });
+    if (addButton == 'accept') {
+        $('#overlaycontainerNest2').fadeOut('fast')
+        $('#overlayOpacityNest2').fadeOut('fast')
+        $('#overlaycontainerNest').fadeOut('fast')
+        $('#overlayOpacityNest').fadeOut('fast')
+        var liSize = $(container_name1).find('#ap-accessories li').size() - 1;
+        // $('#config-container #justAppended' + liSize + ' .ap-quantity').focus();
+    } else if (addButton == 'accept-reset') {
+        $('.capacity-message').addClass('hidden').hide();
+        resetForm();
+        clearUI();
+    }
+
+};
+//Method for help url to loop and check for radio or selects that have been selected
+getUnselectedList = function() {
+    var count;
+    count = [];
+    $(container_name1 + ' .ap-fieldset-fields').each(function(e) {
+        if (!$('input:radio').is(':checked') || !$('option').is('selected')) {
+            if (!$(this).parent().hasClass('one-option')) {
+                return count.push($(this).context.id);
+            }
+        }
+    });
+    //$areq = '&areq='.concat(count.join(','));
+    //return $areq;
+};
+
+modifyDependantCount = function(modifier) {
+    dependantCount += modifier;
+    if (dependantCount > 0 && $(container_name1 + ' #ap-reset-button-nest').hasClass('reset-disable')) {
+        $(container_name1 + ' #ap-reset-button-nest').removeClass('reset-disable').prop('disabled', false);
+    }
+    if (dependantCount <= 0 && !$(container_name1 + ' #ap-reset-button-nest').hasClass('reset-disable')) {
+        return $(container_name1 + ' #ap-reset-button-nest').addClass('reset-disable').prop('disabled', true);
+    }
+};
+
+solutionEqualityTest = function(property, fieldValue) {
+    return (fieldValue === undefined) || (property === fieldValue) || (fieldValue === "ap-unselected");
+};
+
+sanitizeKeys = function(object) {
+    return $.grep(Object.keys(object), function(e, i) {
+        return e !== "solution_id" && e !== "quantity";
+    });
+};
+
+getISODateTime = function(d) {
+    var s;
+    s = function(a, b) {
+        return (1e15 + a + "").slice(-b);
+    };
+    if (typeof d === "undefined") {
+        d = new Date();
+    }
+    return d.getFullYear() + "-" + s(d.getMonth() + 1, 2) + "-" + s(d.getDate(), 2) + " " + s(d.getHours(), 2) + ":" + s(d.getMinutes(), 2) + ":" + s(d.getSeconds(), 2);
+};
+
+$(container_name1 + '  #ap1-psubset-select').change();
+
+
+

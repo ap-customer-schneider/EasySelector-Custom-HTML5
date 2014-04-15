@@ -1,0 +1,84 @@
+- cache @product, :unless => @is_preview do
+  #ap-wrapper
+    %link{href: '//fonts.googleapis.com/css?family=Nunito', rel: 'stylesheet', type: 'text/css'}
+    %link{href: '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', rel: 'stylesheet', type: 'text/css'}
+    /[if lt IE 10]
+      %script{type:'text/javascript', src: 'assets/javascripts/respond.js'}
+
+    -if Rails.env.development?
+      = stylesheet_link_tag 'application.css', debug: true
+    -else
+      = stylesheet_link_tag asset_url('application.css'), debug: false
+
+    #ap-container.big-box.modal.fade.ap-popup-box{tabindex: -1, role: 'dialog', 'aria-labelledby'=>'', 'aria-hidden' => true}
+      .modal-dialog
+
+        #overlayOpacity
+        #overlaycontainer
+          .overlayinnercontainer
+            #popup_box
+              #buttons
+                %p Closing this window will lose all unsaved changes. Are you sure you want to exit?
+                %a.btn.btn-primary.deleteconfirmbuttonyes{href: "#"} Yes
+                %a.btn.btn-danger.deleteconfirmbuttonno{href: "#"} No
+
+
+        #config-container.modal-content
+          = render :partial => 'configurations/header'
+          .modal-body.styled-scroll
+            .row.main-body.styled-scroll
+              #ap-left-side.col-md-6.left-side-column.styled-scroll
+                = render :partial => 'configurations/left-side'
+              #ap-right-side.col-md-6.right-side-column.styled-scroll
+                = render :partial => 'configurations/right-side'
+          .modal-footer
+            = render :partial => 'configurations/footer'
+            #ap-final-result
+
+        #overlayOpacityCapacity
+        #overlaycontainerCapacity
+          .overlayinnercontainerCapacity
+            #popup_box
+              #buttons
+                %p You have exceeded the maximum total capacity!
+                %a.btn.btn-danger.deleteconfirmbuttoncapacity{href: "#"} Ok
+
+        #overlayOpacityNest
+        #overlaycontainerNest
+          .overlayinnercontainerNest
+            %a#ap-close-button-nest.close{'aria-hidden'=> 'true'}
+              X
+            .child-selector-container
+            #overlayOpacityNest2
+            #overlaycontainerNest2
+              .overlayinnercontainerNest2
+                #popup_box-nest
+                  #buttons
+                    %p Closing this window will lose all unsaved changes. Are you sure you want to close this configurator?
+                    %a.btn.btn-primary.deleteconfirmbuttonyesNest{href: "#"} Yes
+                    %a.btn.btn-danger.deleteconfirmbuttonnoNest{href: "#"} No
+
+  :javascript
+    window.AP = #{@ap.to_json}
+
+    if(typeof jQuery == 'undefined'){
+      var jqTag = '<scri'+'pt src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></scri'+'pt>';
+      document.write(jqTag);
+    }
+
+  /[if lt IE 10]
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js'}
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js'}
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js'}
+
+  -if Rails.env.development?
+    = javascript_include_tag 'application.js', debug: true
+  -else
+    = javascript_include_tag asset_url('application.js'), debug: false
+
+- if params[:subset].present?
+  :javascript
+    !function(){
+      $('#ap-psubset-select option[data-sku="#{params[:subset]}"]').prop('selected', true);
+      $('#ap-psubset-select').change();
+    }()

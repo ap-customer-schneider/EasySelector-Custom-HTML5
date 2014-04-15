@@ -1,0 +1,61 @@
+.ap-content.styled-scroll
+  - if @nested == false
+    .ap-section-header Final Parts List
+    #ap-solution.ap-section-list.solutions-container.styled-scroll
+      .message
+        Valid parts will be displayed based on the selected features and accessories
+      %ul
+        %li.template.ap-rtype-item.ap-part-item
+          %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+          .ap-image
+            %a.ap-sb-link
+              %img
+              %i.fa.fa-picture-o
+          .ap-label
+          .ap-description
+
+  .ap-section-header Accessories
+  #ap-accessories.ap-section-list.accessories-container.styled-scroll
+    .message
+      Choose features of a product to see a list of accessories for that product
+    .no-results{style: 'display:none;'}
+      There are no accessories available for this solution
+    .capacity-message.message.hidden
+      .fa.fa-flag
+        These Accessories are limited by a max capacity of
+    %ul
+      .vert-space
+      %li.template.ap-rtype-item.ap-accessory-item
+        %button.btn.btn-success.ap-add-quantity
+          +
+        %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+
+        %i.fa.fa-times.ap-quant-remove
+        - if @nested == false
+          .ap-image
+            %a.ap-sb-link
+              %img
+              %i.fa.fa-picture-o
+        .ap-label
+        .ap-description
+
+
+
+
+  -#.ap-section-header Complimentary Products
+  -##ap-compliments.ap-section-list.styled-scroll
+  -#  .message
+  -#    Choose features of a product to see a list of complimentary products for that product
+  -#  .no-results{style: 'display:none;'}
+  -#    There are no complimentary products available for this solution
+  -#  %ul
+  -#    %li.template.ap-rtype-item.ap-compliment-item
+  -#      %button.btn.btn-success.ap-add-quantity
+  -#        +
+  -#      %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+  -#      .ap-image
+  -#        %a.ap-sb-link
+  -#          %img
+  -#          %i.fa.fa-picture-o
+  -#      .ap-label
+  -#      .ap-description

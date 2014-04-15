@@ -1,0 +1,13 @@
+.row
+  - if @nested == true
+    .col-md-12
+      .col-md-6
+        %button#ap-accept-button.btn.btn-success.btn-block.ap-button.col-md-12.col-sm-6
+          Add these parts to my project
+      .col-md-6
+        %button#ap-accept-reset-button.btn.btn-success.ap-button.col-md-12.pull-right.col-sm-6
+          Add these parts and add another
+  - elsif @nested == false
+    .col-md-6.col-md-offset-6
+      %button#ap-accept-button.btn.btn-success.btn-block.ap-button{data: {dismiss: 'modal'}, 'aria-hidden'=> 'true', disabled: true}
+        Add these parts to my project

@@ -1,0 +1,20 @@
+%ul.subset-list
+  - product_subset.option_values.each do |option_value|
+    - cache "#{option_value.id}-subset-button-#{option_value.updated_at}", :unless => @is_preview do
+      %li.template.ap-subset-item.row{data:{name: sanitize_name(option_value.option.label),
+                                            value: sanitize_name(option_value.value),
+                                            image: option_value.image_url || nil,
+                                            thumb: option_value.thumbnail_image_url || nil,
+                                            title: option_value.value}}
+        .row.ap-subset-inner.pull-left
+          %ul
+            %li
+              %a.ap-sb-link{href: option_value.image_url, title: option_value.value}
+                %img.ap-subset-inner-image.pull-left{src: option_value.thumbnail_image_url}
+            %li
+              .ap-subset-title
+                #{option_value.value}
+                -if option_value.is_preferred
+                  *
+                .ap-subset-text
+                  #{option_value.subset_description}

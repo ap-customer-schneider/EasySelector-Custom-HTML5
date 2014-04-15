@@ -1,0 +1,35 @@
+.modal-header
+  %a#ap-close-button.close{'aria-hidden'=> 'true'}
+    X
+  - if @product.image_url.present?
+    .ap-image
+      %a.ap-sb-link{href: @product.image_url, title: @product.name}
+        %img{src: @product.thumbnail_image_url}
+  %h4#ap-headline.modal-title{data: {id: @product.product_id}}
+    = @product.name
+  #ap-psubset-container.styled-select-product.clearfix
+    - option_name = sanitize_name(product_subset.label)
+    %select.hidden-select{name: option_name+"-hidden"}
+    %select#ap-psubset-select{name: option_name}
+      %option{name: option_name,
+              value: "ap-unselected",
+              data: { image: @product.image_url || nil,
+                thumb: @product.thumbnail_image_url || nil,
+                title: @product.name}}
+        Choose #{product_subset.label}
+      - product_subset.option_values.each do |option_value|
+        - cache option_value, :unless => @is_preview do
+          %option{name: sanitize_name(option_value.option.label),
+                  value: sanitize_name(option_value.value),
+                  data: { sku: option_value.subset_sku,
+                    image: option_value.image_url || nil,
+                    thumb: option_value.thumbnail_image_url || nil,
+                    title: option_value.value}}
+            #{option_value.value}
+            -if option_value.is_preferred
+              *
+  %button.btn.btn-success.reset-disable#ap-reset-button.ap-button Reset
+  %a.btn.btn-success#ap-help-button.ap-button{target: '_blank',
+    href:'http://quotefast.schneider-electric.com/solutionone/SOWPHelp/prodhelp.php?ndx=37991&doc=advisor'}
+    Help
+  - @nested = false

@@ -1,0 +1,88 @@
+.ap-section-header Features
+-if @is_nested
+  -counter = 100
+-else
+  -counter = 0
+-product_options.each do |option|
+  - counter = counter + 1
+  - cache option do
+    - option_name = sanitize_name(option.label)
+    %fieldset.ap-fieldset.left-side-container{data: {name: option_name}}
+      .ap-fieldset-label
+        %i.fa.fa-exclamation.text-alert
+        #{option.label}
+      .ap-fieldset-fields{id: counter}
+        - if is_type(:radio, option)
+          - option.option_values.each do |option_value|
+            - cache option_value, :unless => @is_preview do
+              - p "OPTION DOT LABEL"
+              - p option_value.is_default
+              - p "SOLUTION N N N N"
+              - p @solution
+              -if @solution && @solution.has_key?(sanitize_name(option.label)) && @solution["#{sanitize_name(option.label)}"] == sanitize_name(option_value.value)
+                - p "THE ENCLOSURE?!"
+                %input{id: "ov_#{option_value.id}",
+                       name: sanitize_name(option_value.option.label),
+                       type: 'radio',
+                       value: sanitize_name(option_value.value),
+                       data: {option: "o_#{option.id}"},
+                       checked: true }
+
+                %label{for: "ov_#{option_value.id}"}
+                  %span.labelChecked
+                  #{option_value.value}
+                  -if option_value.is_preferred
+                    =image_tag 'preferred_feature.png'
+                :javascript
+                  $(document).ready( function() {
+                    $("ov_#{option_value.id}").trigger().click();
+                  } );
+
+              -else
+                %input{id: "ov_#{option_value.id}",
+                       name: sanitize_name(option_value.option.label),
+                       type: 'radio',
+                       value: sanitize_name(option_value.value),
+                       data: {option: "o_#{option.id}"},
+                       checked: option_value.is_default || nil}
+                %label{for: "ov_#{option_value.id}"}
+                  %span
+                  #{option_value.value}
+                  -if option_value.is_preferred
+                    =image_tag 'preferred_feature.png'
+        - elsif is_type(:select, option)
+          %select.hidden-select{name: "#{option_name}-hidden"}
+          %select.styled-select{name: option_name,data: {option: "o_#{option.id}"}}
+            %option{name: option_name, value: "ap-unselected"}
+              Choose Option
+            - option.option_values.each do |option_value|
+              - cache option_value, :unless => @is_preview do
+                -if @solution && @solution.has_key?(sanitize_name(option.label)) && @solution["#{sanitize_name(option.label)}"] == sanitize_name(option_value.value)
+
+                  %option{id: "ov_#{option_value.id}",
+                          name: sanitize_name(option_value.option.label),
+                          value: sanitize_name(option_value.value),
+                          selected: true,
+                          data: {is_preferred: option_value.is_preferred ? 1 : 0}}
+                    #{option_value.value}
+                    -if option_value.is_preferred
+                      *
+                -else
+                  %option{id: "ov_#{option_value.id}",
+                          name: sanitize_name(option_value.option.label),
+                          value: sanitize_name(option_value.value),
+                          selected: option_value.is_default || nil,
+                          data: {is_preferred: option_value.is_preferred ? 1 : 0}}
+                    #{option_value.value}
+                    -if option_value.is_preferred
+                      *
+          .preferred-img
+            =image_tag 'preferred_feature.png'
+        %i.fa.fa-edit.option-edit{for: "o_#{option.id}"}
+      - if option.microhelp.present?
+        %span.help-block
+          #{option.microhelp}
+
+      - if option.extended_help_link.present?
+        %span.help-block
+          #{ link_to 'Read More', option.extended_help_link, target: '_blank'}
