@@ -1,0 +1,28 @@
+@-moz-document url-prefix() {
+    #ap-container .styled-select-product select option {
+
+      background: #fff;
+    }
+
+    div.ap-section-list scrollbar {
+     -moz-appearance: none !important;
+     background: #FBC726 !important;
+    }
+    div.ap-section-list thumb,scrollbarbutton {
+     -moz-appearance: none !important;
+     background-color: #FBC726 !important;
+    }
+
+    div.ap-section-list thumb:hover,scrollbarbutton:hover {
+     -moz-appearance: none !important;
+     background-color: #FBC726 !important;
+    }
+
+    div.ap-section-list scrollbarbutton {
+     display: none !important;
+    }
+
+    div.ap-section-list scrollbar[orient="vertical"] {
+    min-width: 15px !important;
+    }
+}

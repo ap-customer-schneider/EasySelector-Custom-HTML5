@@ -1,0 +1,39 @@
+:javascript
+  window.AP2 = #{@ap.to_json};
+  dependantCount = 0;
+  $differenceVal = 0;
+  if("#{@max_capacity}" !== null){
+      $maxCapacity = "#{@max_capacity}"- window.runningCap;
+  }else{
+      $maxCapacity =  "#{@max_capacity}";
+  }
+  $acCapacity = 0;
+  sku = "#{@product_subset_nested}";
+  $accessoriesOriginal = [];
+  prod =  "#{@id.to_s}";
+  product = "#{@product.product_id}";
+  areq = null;
+  var currAcCapacity = 0;
+  var acIntervals;
+  $('.child-selector-container').show();
+
+-if Rails.env.development?
+  = javascript_include_tag 'show.js', debug: true
+-else
+  = javascript_include_tag asset_url('show.js'), debug: false
+
+.child-selector#collapse-toggle
+  .fixed-container
+    .override-styles
+      .child-header
+      .ap-section-list.override-border
+        .fixed-header  
+          = render :partial => 'configurations/header_nest'
+          = render :partial => 'configurations/hlp-wrapper'
+        .fixed-body.styled-scroll
+          = render :partial => 'configurations/radios'
+          = render :partial => 'configurations/right-side'
+        .fixed-footer
+          = render :partial => 'configurations/footer'
+
+

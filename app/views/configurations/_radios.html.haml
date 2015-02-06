@@ -14,14 +14,12 @@
       .ap-fieldset-fields{id: counter}
         - if is_type(:radio, option)
           - option.option_values.each do |option_value|
+
             - cache option_value, :unless => @is_preview do
-              - p "OPTION DOT LABEL"
-              - p option_value.is_default
-              - p "SOLUTION N N N N"
-              - p @solution
+
               -if @solution && @solution.has_key?(sanitize_name(option.label)) && @solution["#{sanitize_name(option.label)}"] == sanitize_name(option_value.value)
-                - p "THE ENCLOSURE?!"
                 %input{id: "ov_#{option_value.id}",
+                       class: "sent_in",
                        name: sanitize_name(option_value.option.label),
                        type: 'radio',
                        value: sanitize_name(option_value.value),
@@ -55,11 +53,14 @@
           %select.styled-select{name: option_name,data: {option: "o_#{option.id}"}}
             %option{name: option_name, value: "ap-unselected"}
               Choose Option
-            - option.option_values.each do |option_value|
+            - option.option_values.sort_by!(&:id).each do |option_value|
+
               - cache option_value, :unless => @is_preview do
+
                 -if @solution && @solution.has_key?(sanitize_name(option.label)) && @solution["#{sanitize_name(option.label)}"] == sanitize_name(option_value.value)
 
                   %option{id: "ov_#{option_value.id}",
+                          class: "sent_in",
                           name: sanitize_name(option_value.option.label),
                           value: sanitize_name(option_value.value),
                           selected: true,
@@ -78,7 +79,9 @@
                       *
           .preferred-img
             =image_tag 'preferred_feature.png'
-        %i.fa.fa-edit.option-edit{for: "o_#{option.id}"}
+        -if @solution && @solution.has_key?(sanitize_name(option.label))
+        -else
+          %i.fa.fa-edit.option-edit{for: "o_#{option.id}"}
       - if option.microhelp.present?
         %span.help-block
           #{option.microhelp}

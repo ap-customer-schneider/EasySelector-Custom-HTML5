@@ -12,7 +12,6 @@
 
     #ap-container.big-box.modal.fade.ap-popup-box{tabindex: -1, role: 'dialog', 'aria-labelledby'=>'', 'aria-hidden' => true}
       .modal-dialog
-
         #overlayOpacity
         #overlaycontainer
           .overlayinnercontainer
@@ -44,10 +43,10 @@
                 %a.btn.btn-danger.deleteconfirmbuttoncapacity{href: "#"} Ok
 
         #overlayOpacityNest
-        #overlaycontainerNest
+          %i.fa.fa-spinner.ov-spinner.hidden
+            LOADING....
+        #overlaycontainerNest.styled-scroll
           .overlayinnercontainerNest
-            %a#ap-close-button-nest.close{'aria-hidden'=> 'true'}
-              X
             .child-selector-container
             #overlayOpacityNest2
             #overlaycontainerNest2
@@ -60,7 +59,6 @@
 
   :javascript
     window.AP = #{@ap.to_json}
-
     if(typeof jQuery == 'undefined'){
       var jqTag = '<scri'+'pt src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></scri'+'pt>';
       document.write(jqTag);
@@ -71,10 +69,16 @@
     %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js'}
     %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js'}
 
+
+  /[if IE 8]
+    :javascript
+      $("html").addClass("ie8")
+
   -if Rails.env.development?
     = javascript_include_tag 'application.js', debug: true
   -else
     = javascript_include_tag asset_url('application.js'), debug: false
+
 
 - if params[:subset].present?
   :javascript

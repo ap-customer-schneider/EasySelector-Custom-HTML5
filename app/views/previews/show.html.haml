@@ -1,0 +1,199 @@
+- cache @product do
+  #ap-wrapper
+    %link{href: '//fonts.googleapis.com/css?family=Nunito', rel: 'stylesheet', type: 'text/css'}
+    /[if lt IE 10]
+      %script{type:'text/javascript', src: 'assets/javascripts/respond.js'}
+
+    -if Rails.env.development?
+      = stylesheet_link_tag 'application.css', debug: true
+    -else
+      = stylesheet_link_tag asset_url('application.css'), debug: false
+
+    #ap-container.modal.fade.ap-popup-box{tabindex: -1, role: 'dialog', 'aria-labelledby'=>'', 'aria-hidden' => true}
+      .modal-dialog
+        #overlayOpacity
+        #overlaycontainer
+          .overlayinnercontainer
+            #popup_box
+              #buttons
+                %p Closing this window will lose all unsaved changes. Are you sure you want to exit?
+                %a.btn.btn-primary.deleteconfirmbuttonyes{href: "#"} Yes
+                %a.btn.btn-danger.deleteconfirmbuttonno{href: "#"} No
+        .modal-content
+          .modal-header
+            %a#ap-close-button.close{'aria-hidden'=> 'true'}
+              X
+            - if @product.image_url.present?
+              .ap-image
+                %a.ap-sb-link{href: @product.image_url, title: @product.name}
+                  %img{src: @product.thumbnail_image_url}
+            %h4#ap-headline.modal-title{data: {id: @product.product_id}}
+              = @product.name
+            .styled-select-product.clearfix
+              - option_name = sanitize_name(product_subset.label)
+              %select.hidden-select{name: option_name+"-hidden"}
+              %select#ap-psubset-select{name: option_name}
+                %option{name: option_name,
+                        value: "ap-unselected",
+                        data: { image: @product.image_url || nil,
+                          thumb: @product.thumbnail_image_url || nil,
+                          title: @product.name}}
+                  Choose #{product_subset.label}
+                - product_subset.option_values.each do |option_value|
+                  - cache option_value do
+                    %option{name: sanitize_name(option_value.option.label),
+                            value: sanitize_name(option_value.value),
+                            data: { sku: option_value.subset_sku,
+                              image: option_value.image_url || nil,
+                              thumb: option_value.thumbnail_image_url || nil,
+                              title: option_value.value}}
+                      #{option_value.value}
+                      -if option_value.is_preferred
+                        *
+            %button.btn.btn-success.reset-disable#ap-reset-button.ap-button Reset
+            %a.btn.btn-success#ap-help-button.ap-button{target: '_blank',
+              href:'http://quotefast.schneider-electric.com/solutionone/SOWPHelp/prodhelp.php?ndx=37991&doc=advisor'}
+              Help
+
+          .modal-body.styled-scroll
+            .row.main-body.styled-scroll
+              #ap-left-side.col-md-6.left-side-column.styled-scroll
+                .ap-hlp-wrapper
+                  .arrow-up
+                  #ap-help-lbl Choose product subset to get available options.
+                .ap-content.styled-scroll.hide
+                  .ap-section-header Features
+                  -counter = 0
+                  -product_options.each do |option|
+                    - counter = counter + 1
+                    - cache option do
+                      - option_name = sanitize_name(option.label)
+                      %fieldset.ap-fieldset.left-side-container{data: {name: option_name}}
+                        .ap-fieldset-label
+                          %i.fa.fa-exclamation.text-alert
+                          #{option.label}
+                        .ap-fieldset-fields{id: counter}
+                          - if is_type(:radio, option)
+                            - option.option_values.each do |option_value|
+                              - cache option_value do
+                                %input{id: "ov_#{option_value.id}",
+                                       name: sanitize_name(option_value.option.label),
+                                       type: 'radio',
+                                       value: sanitize_name(option_value.value),
+                                       data: {option: "o_#{option.id}"},
+                                       checked: option_value.is_default || nil}
+                                %label{for: "ov_#{option_value.id}"}
+                                  %span
+                                  #{option_value.value}
+                                  -if option_value.is_preferred
+                                    *
+                          - elsif is_type(:select, option)
+                            %select.hidden-select{name: "#{option_name}-hidden"}
+                            %select.styled-select{name: option_name,data: {option: "o_#{option.id}"}}
+                              %option{name: option_name, value: "ap-unselected"}
+                                Choose Option
+                              - option.option_values.each do |option_value|
+                                - cache option_value do
+                                  %option{id: "ov_#{option_value.id}",
+                                          name: sanitize_name(option_value.option.label),
+                                          value: sanitize_name(option_value.value),
+                                          selected: option_value.is_default || nil}
+                                    #{option_value.value}
+                                    -if option_value.is_preferred
+                                      *
+                          -# EDIT BUTTON
+                          %i.fa.fa-edit.option-edit{for: "o_#{option.id}"}
+                        - if option.microhelp.present?
+                          %span.help-block
+                            #{option.microhelp}
+
+                        - if option.extended_help_link.present?
+                          %span.help-block
+                            #{ link_to 'Read More', option.extended_help_link, target: '_blank'}
+              #ap-right-side.col-md-6.right-side-column.styled-scroll
+                .ap-content.styled-scroll
+                  .ap-section-header Final Parts List
+                  #ap-solution.ap-section-list.solutions-container.styled-scroll
+                    .message
+                      Valid parts will be displayed based on the selected features and accessories
+                    %ul
+                      %li.template.ap-rtype-item.ap-part-item
+                        %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+                        .ap-image
+                          %a.ap-sb-link
+                            %img
+                            %i.fa.fa-picture-o
+                        .ap-label
+                        .ap-description
+
+
+                  .ap-section-header Accessories
+                  #ap-accessories.ap-section-list.accessories-container.styled-scroll
+                    .message
+                      Choose features of a product to see a list of accessories for that product
+                    .no-results{style: 'display:none;'}
+                      There are no accessories available for this solution
+                    %ul
+                      %li.template.ap-rtype-item.ap-accessory-item
+                        %button.btn.btn-success.ap-add-quantity
+                          +
+                        %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+                        -#.ap-image
+
+                        %i.fa.fa-times.ap-quant-remove
+                        .ap-image
+                          %a.ap-sb-link
+                            %img
+                            %i.fa.fa-picture-o
+                        .ap-label
+                        .ap-description
+
+
+                  -#.ap-section-header Complimentary Products
+                  -##ap-compliments.ap-section-list.styled-scroll
+                  -#  .message
+                  -#    Choose features of a product to see a list of complimentary products for that product
+                  -#  .no-results{style: 'display:none;'}
+                  -#    There are no complimentary products available for this solution
+                  -#  %ul
+                  -#    %li.template.ap-rtype-item.ap-compliment-item
+                  -#      %button.btn.btn-success.ap-add-quantity
+                  -#        +
+                  -#      %input.ap-quantity{pattern: '[0-9]*', title: '', data: {min: 1, max: 1}}
+                  -#      .ap-image
+                  -#        %a.ap-sb-link
+                  -#          %img
+                  -#          %i.fa.fa-picture-o
+                  -#      .ap-label
+                  -#      .ap-description
+
+          .modal-footer
+            .row
+              .col-md-6.col-md-offset-6
+                %button#ap-accept-button.btn.btn-success.btn-block.ap-button{data: {dismiss: 'modal'}, 'aria-hidden'=> 'true', disabled: true}
+                  Add these parts to my project
+            #ap-final-result
+  :javascript
+    window.AP = #{@ap.to_json}
+
+    if(typeof jQuery == 'undefined'){
+      var jqTag = '<scri'+'pt src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></scri'+'pt>';
+      document.write(jqTag);
+    }
+
+  /[if lt IE 10]
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js'}
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js'}
+    %script{type:'text/javascript', src: 'http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js'}
+
+  -if Rails.env.development?
+    = javascript_include_tag 'application.js', debug: true
+  -else
+    = javascript_include_tag asset_url('application.js'), debug: false
+
+- if params[:subset].present?
+  :javascript
+    !function(){
+      $('#ap-psubset-select option[data-sku="#{params[:subset]}"]').prop('selected', true);
+      $('#ap-psubset-select').change();
+    }()

@@ -1,18 +1,22 @@
 .modal-header
+  %a#ap-close-button-nest.close{'aria-hidden'=> 'true'}
+    X
   - if @product.image_url.present?
     .ap-image
       %a.ap-sb-link{href: @product.image_url, title: @product.name}
         %img{src: @product.thumbnail_image_url}
   %h4#ap-headline.modal-title{data: {id: @product.product_id}}
     = @product.name
-    - p 'PRODUCT SUBSET'
-    - p @product_subset
+    %br
+  - p = @product.options.first(:label => "Product Subset").option_values.first(:value => @product_subset_nested )
+  = @product_subset_nested #if @product_subset_nested && p.value.gsub(/\W/,'_').downcase == @product_subset_nested
   #ap-psubset-container.styled-select-product.clearfix
     - option_name = sanitize_name(product_subset.label)
     %select.hidden-select{name: option_name+"-hidden"}
     %select#ap1-psubset-select{name: 'product_subset'}
       %option{name: 'product_subset',
               value: sanitize_name(@product_subset_nested),
+              data: { sku: p.subset_sku, image: p.image_url || nil,thumb: p.thumbnail_image_url || nil,title: p.value},
               selected: 'selected'}
   %button.btn.btn-success.reset-disable#ap-reset-button-nest.ap-button Reset
   %a.btn.btn-success#ap-help-button1.ap-button{target: '_blank',

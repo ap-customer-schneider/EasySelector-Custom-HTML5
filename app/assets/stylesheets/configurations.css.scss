@@ -29,11 +29,40 @@ html {
 }
 
 #ap-wrapper {
+  @media screen and (max-width: 991px) {
+    .fixed-container {
+      height: 630px !important;
+    }
+  }
+  .fixed-container {
+    position: relative;
+    height: 600px;
+  }
+
+  .fixed-header {
+    position: relative;
+    width: 100%;
+    height: 15%;
+  }
+
+  .fixed-body {
+    position: absolute;
+    width: 96%;
+    margin-left: 2%;
+    overflow-y: auto;
+    height: 447px;
+  }
+
+
+  .fixed-footer {
+    position: relative;
+    width: 100%;
+    margin-top: 462px;
+  }
+
   .flag-container{
     float: left;
-    margin-left: 114px;
-    margin-top: -36px;
-    position: absolute;
+    margin-right: 5px;
   }
 
   .test-button{
@@ -80,28 +109,27 @@ html {
     float: right;
   }
   .override-styles .ap-section-header{
-    background-color: $schneiderGreenColor !important;
+    //background-color: $schneiderGreenColor !important;
   }
-
   .override-styles .ap-section-list{
-    border-color: $schneiderGreenColor !important;
+    //border-color: $schneiderGreenColor !important;
   }
 
   .override-styles .ap-fieldset{
-    border-top: 1px solid $schneiderGreenColor !important;
+    //border-top: 1px solid $schneiderGreenColor !important;
   }
 
   .override-styles input[type="radio"] + label span {
-    border: 2px solid $schneiderGreenColor !important;
+    //border: 2px solid $schneiderGreenColor !important;
   }
   .child-selector-container{
     display: none;
-    border: 2px solid $schneiderGreenColor;
+    border: 2px solid $goldColor;
     padding: 5px;
+    background-color: black;
   }
 
   .child-selector{
-    min-height: 350px;
   }
 
   img{
@@ -160,9 +188,12 @@ html {
   }
 
   #overlaycontainerNest {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
     width: 50%;
-    background-color: black;
-    height: 650px;
+    height: 87%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .overlayinnercontainer, .overlayinnercontainerNest, .overlayinnercontainerNest2, .overlayinnercontainerCapacity {
@@ -269,36 +300,36 @@ html {
     color: #ff0000;
   }
 
-  .styled-scroll::-webkit-scrollbar {
+  div.styled-scroll::-webkit-scrollbar {
     background-color: $blackColor;
     opacity: .3;
   }
-  .styled-scroll::-webkit-scrollbar-button {
+  div.styled-scroll::-webkit-scrollbar-button {
     background-color: $goldColor;
     opacity: .3;
 
   }
-  .styled-scroll::-webkit-scrollbar-track {
+  div.styled-scroll::-webkit-scrollbar-track {
     background-color: $blackColor;
     opacity: .3;
   }
-  .styled-scroll::-webkit-scrollbar-track-piece {
+  div.styled-scroll::-webkit-scrollbar-track-piece {
     background-color: $blackColor;
     opacity: .3;
   }
-  .styled-scroll::-webkit-scrollbar-thumb {
+  div.styled-scroll::-webkit-scrollbar-thumb {
     background-color: $goldColor;
     opacity: .3;
     border: 3px solid $blackColor;
     border-top: none;
     border-bottom: none;
   }
-  .styled-scroll::-webkit-scrollbar-corner {
+  div.styled-scroll::-webkit-scrollbar-corner {
     background-color: $blackColor;
     opacity: .3;
   }
 
-  .styled-scroll {
+  div.styled-scroll {
     -ms-scrollbar-base-color: black;
     scrollbar-base-color: black;
     -ms-scrollbar-track-color: black;
@@ -308,6 +339,48 @@ html {
     -ms-overflow-style: scrollbar;
     -ms-scrollbar-arrow-color: $goldColor;
     scrollbar-arrow-color: $goldColor;
+  }
+
+  
+  div.styled-scroll-nested::-webkit-scrollbar {
+    background-color: $blackColor;
+    opacity: .3;
+  }
+  div.styled-scroll-nested::-webkit-scrollbar-button {
+    background-color: $goldColor;
+    opacity: .3;
+  
+  }
+  div.styled-scroll-nested::-webkit-scrollbar-track {
+    background-color: $blackColor;
+    opacity: .3;
+  }
+  div.styled-scroll-nested::-webkit-scrollbar-track-piece {
+    background-color: $blackColor;
+    opacity: .3;
+  }
+  div.styled-scroll-nested::-webkit-scrollbar-thumb {
+    background-color: $goldColor;
+    opacity: .3;
+    border: 3px solid $blackColor;
+    border-top: none;
+    border-bottom: none;
+  }
+  div.styled-scroll-nested::-webkit-scrollbar-corner {
+    background-color: $blackColor;
+    opacity: .3;
+  }
+  
+  div.styled-scroll-nested {
+    -ms-scrollbar-base-color: black;
+    scrollbar-base-color: black;
+    -ms-scrollbar-track-color: black;
+    scrollbar-track-color: black;
+    -ms-scrollbar-face-color: $goldColor !important;
+    scrollbar-face-color: $goldColor !important;
+    -ms-overflow-style: scrollbar;
+    -ms-scrollbar-arrow-color: $goldColor !important;
+    scrollbar-arrow-color: $goldColor !important;
   }
 
   .hidden-select{
@@ -360,6 +433,7 @@ html {
 
   #config-container input[type="radio"] {
     display: none;
+    //visibility: hidden;
   }
 
   .child-selector-container [type="radio"] {
@@ -376,7 +450,7 @@ html {
     border: 2px solid $goldColor;
   }
   .child-selector-container input[type="radio"] + label span {
-    border: 2px solid $schneiderGreenColor !important;
+    border: 2px solid $goldColor !important;
     display: inline-block;
     width: 19px;
     height: 19px;
@@ -394,8 +468,8 @@ html {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
   }
   .child-selector-container input[type="radio"][disabled="disabled"] + label span {
-    color: $schneiderGreenColor !important;
-    border: 2px solid $schneiderGreenColor;
+    color: $goldColor !important;
+    border: 2px solid $goldColor;
     border-radius: 50%;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
   }
@@ -410,13 +484,13 @@ html {
     background-color: $goldColor  !important;
   }
   .child-selector-container input[type="radio"]:checked + label span {
-    background: -moz-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(44%, $schneiderGreenColor), color-stop(50%, rgba(0, 0, 0, 1))); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* IE10+ */
-    background: radial-gradient(ellipse at center, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* W3C */
-    background-color: $schneiderGreenColor  !important;
+    background: -moz-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(44%, $goldColor), color-stop(50%, rgba(0, 0, 0, 1))); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* IE10+ */
+    background: radial-gradient(ellipse at center, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* W3C */
+    background-color: $goldColor  !important;
   }
 
   #config-container input[type="radio"][disabled]:checked + label span {
@@ -436,17 +510,17 @@ html {
   }
   .child-selector-container input[type="radio"][disabled]:checked + label span {
     color: $schneiderGreenColor !important;
-    background: -moz-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(44%, $schneiderGreenColor), color-stop(50%, rgba(0, 0, 0, 1))); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* IE10+ */
-    background: radial-gradient(ellipse at center, $schneiderGreenColor 44%, rgba(0, 0, 0, 1) 50%); /* W3C */
+    background: -moz-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(44%, $goldColor), color-stop(50%, rgba(0, 0, 0, 1))); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* IE10+ */
+    background: radial-gradient(ellipse at center, $goldColor 44%, rgba(0, 0, 0, 1) 50%); /* W3C */
     border-radius: 50%;
-    border: 2px solid $schneiderGreenColor;
+    border: 2px solid $goldColor;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
     opacity: .3;
-    background-color: $schneiderGreenColor !important;
+    background-color: $goldColor !important;
 
   }
   #config-container .labelChecked {
@@ -461,7 +535,7 @@ html {
 
   }
   .child-selector-container .labelChecked {
-    background-color: $schneiderGreenColor !important;
+    background-color: $goldColor !important;
 
   }
   #config-container input[type="radio"][disabled="disabled"] {
@@ -485,11 +559,22 @@ html {
     display: none;
   }
   .child-selector-container input[type="radio"][disabled] + label {
-    color: $schneiderGreenColor !important;
+    color: $goldColor !important;
     cursor: default;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
     opacity: .3;
     display: none;
+  }
+
+  .nested-button{
+    width: 250px;
+    margin-bottom: 6px;
+    margin-top: 5px;
+    margin-right: 10px !important;
+  }
+
+  .nested-footer{
+    text-align: center;
   }
 
   #ap-final-result {
@@ -612,6 +697,11 @@ html {
     height: 576px;
   }
 
+  .child-selector.ap-section-header {
+    overflow-y: scroll;
+
+  }
+
   .ap-section-header {
     height: 26px;
     font-size: 16px;
@@ -627,7 +717,18 @@ html {
     border: 2px solid $goldColor;
     padding: 3px;
     color: white;
+
   }
+
+  .override-border{
+    margin-top: 5px;
+    border: 0px !important;
+    margin-bottom: 7px;
+    padding: 3px;
+    color: white;
+
+  }
+
 
   .ap-section-list ul {
     padding: 0;
@@ -687,11 +788,16 @@ html {
     border-top: 1px solid $goldColor;
     margin: auto;
     padding: 5px 0;
+    font-family: 'Nunito', sans-serif;
+    color: #fbc726;
+    font-size: 14px;
   }
 
   .ap-fieldset label {
     display: block;
     padding-bottom: 6px;
+    float:left;
+    width: 90%;
   }
 
   .ap-fieldset.has-selection i.fa-exclamation,
@@ -704,6 +810,7 @@ html {
     display: none;
     color: $schneiderGreenColor;
     float: right;
+    margin-right:17px;
     cursor: pointer;
   }
   .ap-fieldset.edited i.fa-edit{
@@ -725,7 +832,7 @@ html {
     position: relative;
   }
   .ap-fieldset-fields {
-    width: 45%;
+    width: 55%;
     position: relative;
     float: left;
   }
@@ -815,14 +922,18 @@ html {
     padding: 3px 7px;
     line-height: 21px;
     font-size: small;
+    margin-right: 14px;
     text-align: center;
     cursor: pointer;
   }
   #ap-close-button {
+    margin-right: 14px;
+    margin-top: 19px;
     background-color: $goldColor;
   }
   #ap-close-button-nest {
-    background-color: $schneiderGreenColor;
+
+    background-color: $goldColor;
   }
   .close:hover {
     opacity: .8;
@@ -890,7 +1001,9 @@ html {
     float: left;
     margin-right: 10px;
   }
-
+  .rs-spinner{
+    font-size: 36px;
+  }
   .arrow-down {
     width: 0;
     margin-top: 4px;
@@ -912,6 +1025,10 @@ html {
   /* Test */
   .modal {
     overflow: hidden;
+  }
+
+  .modal-title{
+    font-family: 'Nunito', sans-serif;
   }
 
   .modal-content, .modal-dialog {
@@ -1054,6 +1171,13 @@ html {
       display: none;
     }
   }
+
+    @media screen and (max-width: 1175px) {
+      #overlaycontainerNest{
+        width: 87%;
+      }
+    }
+
 
   //style select product for button overflow.  515-767 everything is wonky otherwise.
   @media screen and (min-width: 515px) and (max-width: 767px) {
