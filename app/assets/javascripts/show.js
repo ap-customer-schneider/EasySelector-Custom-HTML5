@@ -925,10 +925,13 @@ submitFinalResult = function(addButton) {
                     if(boxVal > 0 && $(target).find('.ap-quantity').is(':visible')){
                         $maxCapacity = $maxCapacity - (boxVal*unitCap);
 
+                        console.log(target);
+                        console.log(target.hasClass('ap-accessory-item'));
+
                         if(target.hasClass('ap-accessory-item')){
                             liElement = ('<li class="ap-rtype-item nested naccessory" id="' + mainSelectorElement + '" boxValue="' + boxVal  + '" unitcapacity="' + unitCap + '" ' + 'min="' + minQuant + '" max="' + maxQuant + '"> ').concat(liElement);
                         }else{
-                            liElement = ('<li class="ap-rtype-item nested" id="' + mainSelectorElement + '" boxValue="' + boxVal  + '" unitcapacity="' + unitCap + '" ' + 'min="' + minQuant + '" max="' + maxQuant + '"> ').concat(liElement);
+                            liElement = ('<li class="ap-rtype-item nested naccessory" id="' + mainSelectorElement + '" boxValue="' + boxVal  + '" unitcapacity="' + unitCap + '" ' + 'min="' + minQuant + '" max="' + maxQuant + '"> ').concat(liElement);
 
                         }
                         liElement = liElement.concat('</li>');
@@ -951,11 +954,15 @@ submitFinalResult = function(addButton) {
         };
     });
     if (addButton == 'accept') {
+
         $('#overlaycontainerNest2').fadeOut('fast')
         $('#overlayOpacityNest2').fadeOut('fast')
         $('#overlaycontainerNest').fadeOut('fast')
         $('#overlayOpacityNest').fadeOut('fast')
         var liSize = $(container_name1).find('#ap-accessories, #ap-solution').find('li').size() - 1;
+        resetForm();
+        clearUI();
+        findSolution();
         // $('#config-container #justAppended' + liSize + ' .ap-quantity').focus();
     } else if (addButton == 'accept-reset') {
         $('.capacity-message').addClass('hidden').hide();
